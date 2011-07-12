@@ -1,11 +1,12 @@
 package org.nullie.hellogame;
 
-import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 import javax.microedition.khronos.opengles.GL10;
+
+import android.content.Context;
 
 class Floor implements GameObject {
 	public Floor() {
@@ -56,6 +57,10 @@ class Floor implements GameObject {
 		mIndexBuffer.put(indices);
 		mIndexBuffer.position(0);
 	}
+	
+	public void init(GL10 gl, Context context) {
+		mTexture = Utils.loadTexture(gl, context, R.drawable.floor);
+	}
 
 	@Override
 	public void draw(GL10 gl) {
@@ -63,11 +68,19 @@ class Floor implements GameObject {
 		
 		gl.glPushMatrix();
 		gl.glRotatef(mAngle, 0, 0, 1);
+		
+        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+        gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
+        gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 
 		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, mVertexBuffer);
 		gl.glColorPointer(4, GL10.GL_FLOAT, 0, mColorBuffer);
-		gl.glTexImage2D(GL10.GL_TEXTURE_2D, 0, GL10.GL_RGBA, 512, 512, 0, GL10.GL_RGB, GL10.GL_UNSIGNED_SHORT_5_6_5, mTextureBuffer)
 		gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, mTexCoordBuffer);
+		
+		gl.glEnable(GL10.GL_TEXTURE_2D);
+		gl.glBindTexture(GL10.GL_TEXTURE_2D, mTexture);
+		
+		gl.glTexEnvf(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE, GL10.GL_MODULATE);
 		
 		gl.glDrawElements(GL10.GL_TRIANGLE_STRIP, 4, GL10.GL_UNSIGNED_BYTE, mIndexBuffer);
 		
@@ -81,4 +94,5 @@ class Floor implements GameObject {
 	private FloatBuffer mTexCoordBuffer;
 	private ByteBuffer mIndexBuffer;
 	private float mAngle = 0;
+	private int mTexture;
 }

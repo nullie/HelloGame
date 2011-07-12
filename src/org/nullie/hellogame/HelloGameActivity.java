@@ -38,7 +38,7 @@ class HelloGameSurfaceView extends GLSurfaceView {
 	public HelloGameSurfaceView(Context context) {
 		super(context);
 		
-		mRenderer = new HelloGameRenderer();
+		mRenderer = new HelloGameRenderer(context);
 		setRenderer(mRenderer);
 	}
 	
@@ -46,5 +46,6 @@ class HelloGameSurfaceView extends GLSurfaceView {
 }
 
 interface GameObject {
+	public void init(GL10 gl, Context context);
 	public void draw(GL10 gl);
 }
