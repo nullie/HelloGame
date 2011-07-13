@@ -1,5 +1,9 @@
 package org.nullie.hellogame;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
+
 import javax.microedition.khronos.opengles.GL10;
 
 import android.content.Context;
@@ -66,5 +70,23 @@ public class Utils {
 	    bmp.recycle();
 	    
 	    return id;
+	}
+	
+	public static FloatBuffer allocateFloatBuffer(float floats[]) {
+		ByteBuffer bb = ByteBuffer.allocateDirect(floats.length * Float.SIZE / 8);
+		bb.order(ByteOrder.nativeOrder());
+		FloatBuffer buffer = bb.asFloatBuffer();
+		buffer.put(floats);
+		buffer.position(0);
+		
+		return buffer;
+	}
+
+	public static ByteBuffer allocateByteBuffer(byte bytes[]) {
+		ByteBuffer buffer = ByteBuffer.allocateDirect(bytes.length);
+		buffer.put(bytes);
+		buffer.position(0);
+		
+		return buffer;
 	}
 }

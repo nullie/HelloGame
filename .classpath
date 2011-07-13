@@ -3,5 +3,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
+	<classpathentry kind="lib" path="/home/nullie/work/jbullet-20101010/dist/jbullet.jar" sourcepath="/home/nullie/work/jbullet-20101010/src"/>
+	<classpathentry kind="lib" path="/home/nullie/work/jbullet-20101010/lib/vecmath/vecmath.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

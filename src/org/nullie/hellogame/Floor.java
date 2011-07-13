@@ -1,27 +1,19 @@
 package org.nullie.hellogame;
 
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 import javax.microedition.khronos.opengles.GL10;
 
 import android.content.Context;
 
-class Floor implements GameObject {
+class Floor implements World.WorldObject {
 	public Floor() {
 		float vertices[] = {
 				-1, -1, 0,
 				-1, 1, 0,
 				1, -1, 0,
 				1, 1, 0,
-		};
-		
-		float colors[] = {
-				1, 0, 0, 1,
-				0, 1, 0, 1,
-				0, 0, 1, 1,
-				1, 0, 1, 1,
 		};
 		
 		float textureCoords[] = {
@@ -35,27 +27,11 @@ class Floor implements GameObject {
 				0, 1, 2, 3
 		};
 		
-		ByteBuffer vbb = ByteBuffer.allocateDirect(vertices.length * Float.SIZE / 8);
-		vbb.order(ByteOrder.nativeOrder());
-		mVertexBuffer = vbb.asFloatBuffer();
-		mVertexBuffer.put(vertices);
-		mVertexBuffer.position(0);
+		mVertexBuffer = Utils.allocateFloatBuffer(vertices);
+
+		mTexCoordBuffer = Utils.allocateFloatBuffer(textureCoords);
 		
-		ByteBuffer cbb = ByteBuffer.allocateDirect(colors.length * Float.SIZE / 8);
-		cbb.order(ByteOrder.nativeOrder());
-		mColorBuffer = cbb.asFloatBuffer();
-		mColorBuffer.put(colors);
-		mColorBuffer.position(0);
-		
-		ByteBuffer tcbb = ByteBuffer.allocateDirect(colors.length * Float.SIZE / 8);
-		tcbb.order(ByteOrder.nativeOrder());
-		mTexCoordBuffer = tcbb.asFloatBuffer();
-		mTexCoordBuffer.put(textureCoords);
-		mTexCoordBuffer.position(0);
-		
-		mIndexBuffer = ByteBuffer.allocateDirect(indices.length);
-		mIndexBuffer.put(indices);
-		mIndexBuffer.position(0);
+		mIndexBuffer = Utils.allocateByteBuffer(indices);
 	}
 	
 	public void init(GL10 gl, Context context) {
@@ -70,11 +46,9 @@ class Floor implements GameObject {
 		gl.glRotatef(mAngle, 0, 0, 1);
 		
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-        gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
         gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 
 		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, mVertexBuffer);
-		gl.glColorPointer(4, GL10.GL_FLOAT, 0, mColorBuffer);
 		gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, mTexCoordBuffer);
 		
 		gl.glEnable(GL10.GL_TEXTURE_2D);
@@ -84,13 +58,14 @@ class Floor implements GameObject {
 		
 		gl.glDrawElements(GL10.GL_TRIANGLE_STRIP, 4, GL10.GL_UNSIGNED_BYTE, mIndexBuffer);
 		
+		gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+		
 		gl.glPopMatrix();
 		
 		mAngle += 3;
 	}
 	
 	private FloatBuffer mVertexBuffer;
-	private FloatBuffer mColorBuffer;
 	private FloatBuffer mTexCoordBuffer;
 	private ByteBuffer mIndexBuffer;
 	private float mAngle = 0;
