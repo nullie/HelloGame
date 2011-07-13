@@ -13,7 +13,6 @@ import com.bulletphysics.collision.dispatch.CollisionConfiguration;
 import com.bulletphysics.collision.dispatch.CollisionDispatcher;
 import com.bulletphysics.collision.dispatch.DefaultCollisionConfiguration;
 import com.bulletphysics.collision.shapes.CollisionShape;
-import com.bulletphysics.collision.shapes.SphereShape;
 import com.bulletphysics.collision.shapes.StaticPlaneShape;
 import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
 import com.bulletphysics.dynamics.RigidBody;
@@ -31,11 +30,6 @@ class World implements GLSurfaceView.Renderer {
 	public World(Context context) {
 		mContext = context;
 		
-		mObjects = new WorldObject[2];
-		
-		mObjects[0] = new Floor();
-		mObjects[1] = new Cube();
-		
 		// Build the broadphase
 		DbvtBroadphase broadphase = new DbvtBroadphase();
 		
@@ -52,8 +46,6 @@ class World implements GLSurfaceView.Renderer {
 		
 		CollisionShape groundShape = new StaticPlaneShape(new Vector3f(0.0f, 0.0f, 1.0f), 0);
 		
-		CollisionShape ballShape = new SphereShape(1);
-		
 		DefaultMotionState groundMotionState = new DefaultMotionState();
 		
 		RigidBodyConstructionInfo rbInfo = new RigidBodyConstructionInfo(0,	groundMotionState, groundShape);
@@ -68,13 +60,13 @@ class World implements GLSurfaceView.Renderer {
 		
 		startTransform.origin.set(0.f, 0.f, 10.f);
 		
-		DefaultMotionState ballMotionState = new DefaultMotionState(startTransform);
+		mObjects = new WorldObject[5];
 		
-		rbInfo = new RigidBodyConstructionInfo(10.f, ballMotionState, ballShape);
-		
-		RigidBody ball = new RigidBody(rbInfo);
-		
-		mDynamicsWorld.addRigidBody(ball);
+		mObjects[0] = new Floor();
+		mObjects[1] = new Cube(mDynamicsWorld, new Vector3f(0.f, 1.1f, 5.f));
+		mObjects[2] = new Cube(mDynamicsWorld, new Vector3f(1.1f, 0.f, 10.f));
+		mObjects[3] = new Cube(mDynamicsWorld, new Vector3f(1.1f, 0.f, 15.f));
+		mObjects[4] = new Cube(mDynamicsWorld, new Vector3f(1.1f, 0.f, 20.f));
 	}
 	
 	@Override
@@ -85,13 +77,13 @@ class World implements GLSurfaceView.Renderer {
         gl.glMatrixMode(GL10.GL_MODELVIEW);
         gl.glLoadIdentity();
         
-		GLU.gluLookAt(gl, -2, -2, 2, 0, 0, 0, 0, 0, 1);
+		GLU.gluLookAt(gl, -10, -10, 10, 0, 0, 0, 0, 0, 1);
 		
 		for(WorldObject object : mObjects) {
 			object.draw(gl);
 		}
 		
-		mDynamicsWorld.stepSimulation(.01f);
+		mDynamicsWorld.stepSimulation(.033f);
 	}
 
 	@Override

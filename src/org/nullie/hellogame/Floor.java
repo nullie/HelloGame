@@ -10,10 +10,10 @@ import android.content.Context;
 class Floor implements World.WorldObject {
 	public Floor() {
 		float vertices[] = {
-				-1, -1, 0,
-				-1, 1, 0,
-				1, -1, 0,
-				1, 1, 0,
+				-10, -10, 0,
+				-10, 10, 0,
+				10, -10, 0,
+				10, 10, 0,
 		};
 		
 		float textureCoords[] = {
@@ -62,7 +62,7 @@ class Floor implements World.WorldObject {
 		
 		gl.glPopMatrix();
 		
-		mAngle += 3;
+		// mAngle += 3;
 	}
 	
 	private FloatBuffer mVertexBuffer;
