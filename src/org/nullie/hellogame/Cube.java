@@ -133,7 +133,7 @@ public class Cube implements World.WorldObject {
 	private void createRigidBody(DefaultMotionState motionState) {
 		CollisionShape shape = new BoxShape(new Vector3f(1.f, 1.f, 1.f));
 		
-		RigidBodyConstructionInfo rbInfo = new RigidBodyConstructionInfo(10.f, motionState, shape, new Vector3f(1.f, 1.f, 1.f));
+		RigidBodyConstructionInfo rbInfo = new RigidBodyConstructionInfo(10.f, motionState, shape, new Vector3f(10.f, 10.f, 10.f));
 		
 		mRigidBody = new RigidBody(rbInfo);
 	}

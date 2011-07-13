@@ -12,14 +12,8 @@ import com.bulletphysics.collision.broadphase.DbvtBroadphase;
 import com.bulletphysics.collision.dispatch.CollisionConfiguration;
 import com.bulletphysics.collision.dispatch.CollisionDispatcher;
 import com.bulletphysics.collision.dispatch.DefaultCollisionConfiguration;
-import com.bulletphysics.collision.shapes.CollisionShape;
-import com.bulletphysics.collision.shapes.StaticPlaneShape;
 import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
-import com.bulletphysics.dynamics.RigidBody;
-import com.bulletphysics.dynamics.RigidBodyConstructionInfo;
 import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSolver;
-import com.bulletphysics.linearmath.DefaultMotionState;
-import com.bulletphysics.linearmath.Transform;
 
 class World implements GLSurfaceView.Renderer {
 	public interface WorldObject {
@@ -30,6 +24,18 @@ class World implements GLSurfaceView.Renderer {
 	public World(Context context) {
 		mContext = context;
 		
+		initPhysics();
+				
+		mObjects = new WorldObject[5];
+		
+		mObjects[0] = new Floor(mDynamicsWorld);
+		mObjects[1] = new Cube(mDynamicsWorld, new Vector3f(0.f, 1.1f, 5.f));
+		mObjects[2] = new Cube(mDynamicsWorld, new Vector3f(1.1f, 0.f, 10.f));
+		mObjects[3] = new Cube(mDynamicsWorld, new Vector3f(1.1f, 0.f, 15.f));
+		mObjects[4] = new Cube(mDynamicsWorld, new Vector3f(1.1f, 0.f, 20.f));		
+	}
+	
+	private void initPhysics() {
 		// Build the broadphase
 		DbvtBroadphase broadphase = new DbvtBroadphase();
 		
@@ -42,31 +48,7 @@ class World implements GLSurfaceView.Renderer {
 		
 		mDynamicsWorld = new DiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
 		
-		mDynamicsWorld.setGravity(new Vector3f(0.0f, 0.0f, -10.0f));
-		
-		CollisionShape groundShape = new StaticPlaneShape(new Vector3f(0.0f, 0.0f, 1.0f), 0);
-		
-		DefaultMotionState groundMotionState = new DefaultMotionState();
-		
-		RigidBodyConstructionInfo rbInfo = new RigidBodyConstructionInfo(0,	groundMotionState, groundShape);
-	
-		RigidBody ground = new RigidBody(rbInfo);
-		
-		mDynamicsWorld.addRigidBody(ground);
-		
-		Transform startTransform = new Transform();
-		
-		startTransform.setIdentity();
-		
-		startTransform.origin.set(0.f, 0.f, 10.f);
-		
-		mObjects = new WorldObject[5];
-		
-		mObjects[0] = new Floor();
-		mObjects[1] = new Cube(mDynamicsWorld, new Vector3f(0.f, 1.1f, 5.f));
-		mObjects[2] = new Cube(mDynamicsWorld, new Vector3f(1.1f, 0.f, 10.f));
-		mObjects[3] = new Cube(mDynamicsWorld, new Vector3f(1.1f, 0.f, 15.f));
-		mObjects[4] = new Cube(mDynamicsWorld, new Vector3f(1.1f, 0.f, 20.f));
+		mDynamicsWorld.setGravity(new Vector3f(0.0f, 0.0f, -10.0f));		
 	}
 	
 	@Override

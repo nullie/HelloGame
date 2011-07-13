@@ -4,11 +4,26 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 
 import javax.microedition.khronos.opengles.GL10;
+import javax.vecmath.Vector3f;
+
+import com.bulletphysics.collision.shapes.CollisionShape;
+import com.bulletphysics.collision.shapes.StaticPlaneShape;
+import com.bulletphysics.dynamics.DynamicsWorld;
+import com.bulletphysics.dynamics.RigidBody;
+import com.bulletphysics.dynamics.RigidBodyConstructionInfo;
+import com.bulletphysics.linearmath.DefaultMotionState;
 
 import android.content.Context;
 
 class Floor implements World.WorldObject {
-	public Floor() {
+	public Floor(DynamicsWorld world) {
+		createGeometry();
+		createRigidBody();
+		
+		world.addRigidBody(mRigidBody);
+	}
+	
+	private void createGeometry() {
 		float vertices[] = {
 				-10, -10, 0,
 				-10, 10, 0,
@@ -31,7 +46,17 @@ class Floor implements World.WorldObject {
 
 		mTexCoordBuffer = Utils.allocateFloatBuffer(textureCoords);
 		
-		mIndexBuffer = Utils.allocateByteBuffer(indices);
+		mIndexBuffer = Utils.allocateByteBuffer(indices);		
+	}
+	
+	private void createRigidBody() {
+		CollisionShape groundShape = new StaticPlaneShape(new Vector3f(0.0f, 0.0f, 1.0f), 0);
+		
+		DefaultMotionState groundMotionState = new DefaultMotionState();
+		
+		RigidBodyConstructionInfo rbInfo = new RigidBodyConstructionInfo(0,	groundMotionState, groundShape);
+	
+		mRigidBody = new RigidBody(rbInfo);
 	}
 	
 	public void init(GL10 gl, Context context) {
@@ -43,7 +68,6 @@ class Floor implements World.WorldObject {
 		gl.glFrontFace(GL10.GL_CCW);
 		
 		gl.glPushMatrix();
-		gl.glRotatef(mAngle, 0, 0, 1);
 		
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
         gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
@@ -68,6 +92,6 @@ class Floor implements World.WorldObject {
 	private FloatBuffer mVertexBuffer;
 	private FloatBuffer mTexCoordBuffer;
 	private ByteBuffer mIndexBuffer;
-	private float mAngle = 0;
 	private int mTexture;
+	private RigidBody mRigidBody;
 }

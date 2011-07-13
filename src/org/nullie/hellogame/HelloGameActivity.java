@@ -1,11 +1,10 @@
 package org.nullie.hellogame;
 
-import javax.microedition.khronos.opengles.GL10;
-
 import android.app.Activity;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.view.MotionEvent;
 
 public class HelloGameActivity extends Activity {
     /** Called when the activity is first created. */
@@ -40,6 +39,16 @@ class HelloGameSurfaceView extends GLSurfaceView {
 		
 		mRenderer = new World(context);
 		setRenderer(mRenderer);
+	}
+	
+	@Override
+	public boolean onTouchEvent(final MotionEvent event) {
+		queueEvent(new Runnable() {
+			public void run() {
+			}
+		});
+		
+		return true;
 	}
 	
 	World mRenderer;
