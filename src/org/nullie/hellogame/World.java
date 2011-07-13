@@ -1,5 +1,7 @@
 package org.nullie.hellogame;
 
+import java.util.Random;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 import javax.vecmath.Vector3f;
@@ -25,14 +27,22 @@ class World implements GLSurfaceView.Renderer {
 		mContext = context;
 		
 		initPhysics();
+		
+		int nCubes = 10;
 				
-		mObjects = new WorldObject[5];
+		mObjects = new WorldObject[nCubes + 1];
 		
 		mObjects[0] = new Floor(mDynamicsWorld);
-		mObjects[1] = new Cube(mDynamicsWorld, new Vector3f(0.f, 1.1f, 5.f));
-		mObjects[2] = new Cube(mDynamicsWorld, new Vector3f(1.1f, 0.f, 10.f));
-		mObjects[3] = new Cube(mDynamicsWorld, new Vector3f(1.1f, 0.f, 15.f));
-		mObjects[4] = new Cube(mDynamicsWorld, new Vector3f(1.1f, 0.f, 20.f));		
+		
+		Random random = new Random();
+		
+		for(int i = 0; i < nCubes; i++) {
+			float x = (random.nextFloat() - .5f) * 10.0f;
+			float y = (random.nextFloat() - .5f) * 10.0f;
+			float z = random.nextFloat() * 50.0f + 1.f;
+			
+			mObjects[i + 1] = new Cube(mDynamicsWorld, new Vector3f(x, y, z));
+		}
 	}
 	
 	private void initPhysics() {
@@ -74,7 +84,7 @@ class World implements GLSurfaceView.Renderer {
 		
 		gl.glMatrixMode(GL10.GL_PROJECTION);
 		gl.glLoadIdentity();
-		GLU.gluPerspective(gl, mFOV, (float)width / height, 1.0f, 100.0f);
+		GLU.gluPerspective(gl, mFOV, (float)width / height, 1.0f, 1000.0f);
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
 	}
 
